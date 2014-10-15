@@ -41,11 +41,8 @@ namespace CelerFToverHTTP.Controllers
             }
         }
 
-
-        [System.Web.Http.HttpPost]
-        public async Task<HttpResponseMessage> UploadChunk(string filename, string directoryname, int chunknumber, int numberofChunks)
+        private async Task<HttpResponseMessage> ProcessChunk(string filename, string directoryname, int chunknumber, int numberofChunks)
         {
-
             // Check if the request contains multipart/form-data.            
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -134,487 +131,54 @@ namespace CelerFToverHTTP.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
             }
+        }
 
+        [System.Web.Http.HttpPost]
+        public async Task<HttpResponseMessage> UploadChunk(string filename, string directoryname, int chunknumber, int numberofChunks)
+        {
+
+            HttpResponseMessage returnmessage = await ProcessChunk(filename, directoryname, chunknumber, numberofChunks);
+            return returnmessage;
         }
 
         [System.Web.Http.HttpPost]
         public async Task<HttpResponseMessage> UploadChunk1(string filename, string directoryname, int chunknumber, int numberofChunks)
         {
 
-            // Check if the request contains multipart/form-data.            
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-            // Check that we are not trying to upload a file greater than 50MB
-            Int32 maxinputlength = 51 * 1024 * 1024;
-
-            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
-            }
-
-            try
-            {
-
-                //HttpPostedFileBase file = null;
-                byte[] filedata = null;
-
-                // If we have the custome header then we are processing hand made multipart-form-data
-                if (HttpContext.Current.Request.Headers["CelerFT-Encoded"] != null)
-                {
-
-                    HttpPostedFileBase base64file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (base64file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    byte[] base64filedata = new byte[base64file.InputStream.Length];
-                    await base64file.InputStream.ReadAsync(base64filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                    var base64string = System.Text.UTF8Encoding.UTF8.GetString(base64filedata);
-
-                    filedata = Convert.FromBase64String(base64string);
-
-
-                }
-                else
-                {
-
-                    HttpPostedFileBase file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    filedata = new byte[file.InputStream.Length];
-                    await file.InputStream.ReadAsync(filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                }
-
-                if (filedata == null)
-                {
-
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                }
-                var newfilename = filename.Split('.');
-                string baseFilename = Path.GetFileNameWithoutExtension(filename);
-                string extension = Path.GetExtension(filename);
-
-                string tempdirectoryname = Path.GetFileNameWithoutExtension(filename);
-                var localFilePath = getFileFolder(directoryname + "\\" + tempdirectoryname) + "\\" + baseFilename + "." + chunknumber.ToString().PadLeft(16, Convert.ToChar("0")) + "." + extension + ".tmp";
-
-                var input = new MemoryStream(filedata);
-                var outputFile = File.Open(localFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-
-                await input.CopyToAsync(outputFile);
-                input.Close();
-                outputFile.Close();
-
-
-                filedata = null;
-
-                return new HttpResponseMessage()
-                {
-                    Content = new StringContent(localFilePath),
-                    StatusCode = HttpStatusCode.OK
-                };
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
+            HttpResponseMessage returnmessage = await ProcessChunk(filename, directoryname, chunknumber, numberofChunks);
+            return returnmessage;
         }
 
         [System.Web.Http.HttpPost]
         public async Task<HttpResponseMessage> UploadChunk2(string filename, string directoryname, int chunknumber, int numberofChunks)
         {
 
-            // Check if the request contains multipart/form-data.            
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-            // Check that we are not trying to upload a file greater than 50MB
-            Int32 maxinputlength = 51 * 1024 * 1024;
-
-            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
-            }
-
-            try
-            {
-
-                //HttpPostedFileBase file = null;
-                byte[] filedata = null;
-
-                // If we have the custome header then we are processing hand made multipart-form-data
-                if (HttpContext.Current.Request.Headers["CelerFT-Encoded"] != null)
-                {
-
-                    HttpPostedFileBase base64file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (base64file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    byte[] base64filedata = new byte[base64file.InputStream.Length];
-                    await base64file.InputStream.ReadAsync(base64filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                    var base64string = System.Text.UTF8Encoding.UTF8.GetString(base64filedata);
-
-                    filedata = Convert.FromBase64String(base64string);
-
-
-                }
-                else
-                {
-
-                    HttpPostedFileBase file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    filedata = new byte[file.InputStream.Length];
-                    await file.InputStream.ReadAsync(filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                }
-
-                if (filedata == null)
-                {
-
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                }
-                var newfilename = filename.Split('.');
-                string baseFilename = Path.GetFileNameWithoutExtension(filename);
-                string extension = Path.GetExtension(filename);
-
-                string tempdirectoryname = Path.GetFileNameWithoutExtension(filename);
-                var localFilePath = getFileFolder(directoryname + "\\" + tempdirectoryname) + "\\" + baseFilename + "." + chunknumber.ToString().PadLeft(16, Convert.ToChar("0")) + "." + extension + ".tmp";
-
-                var input = new MemoryStream(filedata);
-                var outputFile = File.Open(localFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-
-                await input.CopyToAsync(outputFile);
-                input.Close();
-                outputFile.Close();
-
-
-                filedata = null;
-
-                return new HttpResponseMessage()
-                {
-                    Content = new StringContent(localFilePath),
-                    StatusCode = HttpStatusCode.OK
-                };
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
+            HttpResponseMessage returnmessage = await ProcessChunk(filename, directoryname, chunknumber, numberofChunks);
+            return returnmessage;
         }
 
         [System.Web.Http.HttpPost]
         public async Task<HttpResponseMessage> UploadChunk3(string filename, string directoryname, int chunknumber, int numberofChunks)
         {
 
-            // Check if the request contains multipart/form-data.            
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-            // Check that we are not trying to upload a file greater than 50MB
-            Int32 maxinputlength = 51 * 1024 * 1024;
-
-            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
-            }
-
-            try
-            {
-
-                //HttpPostedFileBase file = null;
-                byte[] filedata = null;
-
-                // If we have the custome header then we are processing hand made multipart-form-data
-                if (HttpContext.Current.Request.Headers["CelerFT-Encoded"] != null)
-                {
-
-                    HttpPostedFileBase base64file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (base64file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    byte[] base64filedata = new byte[base64file.InputStream.Length];
-                    await base64file.InputStream.ReadAsync(base64filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                    var base64string = System.Text.UTF8Encoding.UTF8.GetString(base64filedata);
-
-                    filedata = Convert.FromBase64String(base64string);
-
-
-                }
-                else
-                {
-
-                    HttpPostedFileBase file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    filedata = new byte[file.InputStream.Length];
-                    await file.InputStream.ReadAsync(filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                }
-
-                if (filedata == null)
-                {
-
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                }
-                var newfilename = filename.Split('.');
-                string baseFilename = Path.GetFileNameWithoutExtension(filename);
-                string extension = Path.GetExtension(filename);
-
-                string tempdirectoryname = Path.GetFileNameWithoutExtension(filename);
-                var localFilePath = getFileFolder(directoryname + "\\" + tempdirectoryname) + "\\" + baseFilename + "." + chunknumber.ToString().PadLeft(16, Convert.ToChar("0")) + "." + extension + ".tmp";
-
-                var input = new MemoryStream(filedata);
-                var outputFile = File.Open(localFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-
-                await input.CopyToAsync(outputFile);
-                input.Close();
-                outputFile.Close();
-
-
-                filedata = null;
-
-                return new HttpResponseMessage()
-                {
-                    Content = new StringContent(localFilePath),
-                    StatusCode = HttpStatusCode.OK
-                };
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
+            HttpResponseMessage returnmessage = await ProcessChunk(filename, directoryname, chunknumber, numberofChunks);
+            return returnmessage;
         }
 
         [System.Web.Http.HttpPost]
         public async Task<HttpResponseMessage> UploadChunk4(string filename, string directoryname, int chunknumber, int numberofChunks)
         {
 
-            // Check if the request contains multipart/form-data.            
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-            // Check that we are not trying to upload a file greater than 50MB
-            Int32 maxinputlength = 51 * 1024 * 1024;
-
-            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
-            }
-
-            try
-            {
-
-                //HttpPostedFileBase file = null;
-                byte[] filedata = null;
-
-                // If we have the custome header then we are processing hand made multipart-form-data
-                if (HttpContext.Current.Request.Headers["CelerFT-Encoded"] != null)
-                {
-
-                    HttpPostedFileBase base64file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (base64file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    byte[] base64filedata = new byte[base64file.InputStream.Length];
-                    await base64file.InputStream.ReadAsync(base64filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                    var base64string = System.Text.UTF8Encoding.UTF8.GetString(base64filedata);
-
-                    filedata = Convert.FromBase64String(base64string);
-
-
-                }
-                else
-                {
-
-                    HttpPostedFileBase file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-
-                    filedata = new byte[file.InputStream.Length];
-                    await file.InputStream.ReadAsync(filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                }
-
-                if (filedata == null)
-                {
-
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                }
-                var newfilename = filename.Split('.');
-                string baseFilename = Path.GetFileNameWithoutExtension(filename);
-                string extension = Path.GetExtension(filename);
-
-                string tempdirectoryname = Path.GetFileNameWithoutExtension(filename);
-                var localFilePath = getFileFolder(directoryname + "\\" + tempdirectoryname) + "\\" + baseFilename + "." + chunknumber.ToString().PadLeft(16, Convert.ToChar("0")) + "." + extension + ".tmp";
-
-                var input = new MemoryStream(filedata);
-                var outputFile = File.Open(localFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-
-                await input.CopyToAsync(outputFile);
-                input.Close();
-                outputFile.Close();
-
-
-                filedata = null;
-
-                return new HttpResponseMessage()
-                {
-                    Content = new StringContent(localFilePath),
-                    StatusCode = HttpStatusCode.OK
-                };
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
+            HttpResponseMessage returnmessage = await ProcessChunk(filename, directoryname, chunknumber, numberofChunks);
+            return returnmessage;
         }
-        
+
         [System.Web.Http.HttpPost]
         public async Task<HttpResponseMessage> UploadChunk5(string filename, string directoryname, int chunknumber, int numberofChunks)
         {
 
-            // Check if the request contains multipart/form-data.            
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-            // Check that we are not trying to upload a file greater than 50MB
-            Int32 maxinputlength = 51 * 1024 * 1024;
-
-            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
-            }
-
-            try
-            {
-
-                //HttpPostedFileBase file = null;
-                byte[] filedata = null;
-
-                // If we have the custome header then we are processing hand made multipart-form-data
-                if (HttpContext.Current.Request.Headers["CelerFT-Encoded"] != null)
-                {
-                                        
-                    HttpPostedFileBase base64file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (base64file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-                    
-                    byte[] base64filedata = new byte[base64file.InputStream.Length];
-                    await base64file.InputStream.ReadAsync(base64filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
-
-                    var base64string = System.Text.UTF8Encoding.UTF8.GetString(base64filedata);
-
-                    filedata = Convert.FromBase64String(base64string);
-
-
-                }
-                else
-                {
-
-                    HttpPostedFileBase file = new HttpPostedFileWrapper(HttpContext.Current.Request.Files["Slice"]);
-
-                    if (file == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                    }
-
-                    
-                    filedata = new byte[file.InputStream.Length];
-                    await file.InputStream.ReadAsync(filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));                   
-
-                }
-
-                if (filedata == null)
-                {
-
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
-                }
-                var newfilename = filename.Split('.');
-                string baseFilename = Path.GetFileNameWithoutExtension(filename);
-                string extension = Path.GetExtension(filename);
-
-                string tempdirectoryname = Path.GetFileNameWithoutExtension(filename);
-                var localFilePath = getFileFolder(directoryname + "\\" + tempdirectoryname) + "\\" + baseFilename + "." + chunknumber.ToString().PadLeft(16, Convert.ToChar("0")) + "." + extension + ".tmp";
-
-                var input = new MemoryStream(filedata);
-                var outputFile = File.Open(localFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-
-                await input.CopyToAsync(outputFile);
-                input.Close();
-                outputFile.Close();
-
-
-                filedata = null;
-
-                return new HttpResponseMessage()
-                {
-                    Content = new StringContent(localFilePath),
-                    StatusCode = HttpStatusCode.OK
-                };
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
-            }
-
+            HttpResponseMessage returnmessage = await ProcessChunk(filename, directoryname, chunknumber, numberofChunks);
+            return returnmessage;
         }
       
         [System.Web.Http.HttpGet]
