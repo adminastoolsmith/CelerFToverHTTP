@@ -19,13 +19,13 @@
         #uploadfileresults{
             width:56%;  height:45%;  
             position:absolute;
-            bottom:40px; 
+            bottom:-340px; 
             left:20px;
         }
         #uploadfileerrors{
             width:40%;  height:45%;  
             position:absolute;
-            bottom:40px;
+            bottom:-340px;
             right:20px;
         }
         #legend_uploadfileform {
@@ -50,7 +50,7 @@
             -webkit-border-radius: 8px;
             -moz-border-radius: 8px;
             border-radius: 8px;
-            height:260px;
+            height:auto;
         }
         fieldset.bottom{
 
@@ -103,9 +103,9 @@
     </style>
     <script src="Scripts/jquery-2.1.1.min.js"></script>
 </head>
-<body>
+<body style="position:relative;width:100%">
     <div id="uploadfileform">
-        <form name="ClerFTFileUpload">
+        <form name="ClerFTFileUpload" style="height:240px">
             <fieldset class="top">
                 <legend id="legend_uploadfileform">CelerFT File Uploader</legend>
                 <ol style="list-style:none">
