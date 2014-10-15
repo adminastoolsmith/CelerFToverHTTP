@@ -76,6 +76,7 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.11.1.min.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\spark-md5.js" />
     <Content Include="Scripts\workerprocessfile.js" />
     <Content Include="Scripts\workeruploadchunk.js" />
     <None Include="Scripts\_references.js" />
