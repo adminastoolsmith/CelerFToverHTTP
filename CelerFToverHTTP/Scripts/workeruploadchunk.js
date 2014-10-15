@@ -188,6 +188,23 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
 
         }
 
+        if (this.readyState == 4 && this.status == 415) {
+
+            // Tried to upload file that is not multipart/form-data.
+            // End the upload
+            self.postMessage({ 'type': 'error', 'message': "Upload Error: " + this.responseText, 'id': workerdata.id });
+
+        }
+
+        if (this.readyState == 4 && this.status == 413) {
+
+            // Tried to upload file that is greater than the maximum file size.
+            // End the upload
+            self.postMessage({ 'type': 'error', 'message': "Upload Error: " + this.responseText, 'id': workerdata.id });
+
+        }
+
+
         if (this.readyState == 4 && this.status == 500) {
 
             // Fatal error occured on the server side

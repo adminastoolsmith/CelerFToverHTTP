@@ -370,6 +370,11 @@
                             case 'error':
                                 $("#errormessage").append('<p>' + data.message + '</p>');
 
+                                for (var j = 0; j < workers.length; j++) {
+
+                                    workers[j].terminate();
+                                }
+
                                 for (var i = 0; i < uploadworkers.length; i++) {
 
                                     uploadworkers[i].terminate();
@@ -430,6 +435,12 @@
 
                                     workers[j].terminate();
                                 }
+
+                                for (var i = 0; i < uploadworkers.length; i++) {
+
+                                    uploadworkers[i].terminate();
+                                }
+
                                 break;
                         }
 

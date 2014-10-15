@@ -26,7 +26,10 @@ namespace CelerFToverHTTP.Controllers
             var folder = ConfigurationManager.AppSettings["uploadpath"] + "\\" + directoryname;
 
             if (!System.IO.Directory.Exists(folder))
+            {
                 System.IO.Directory.CreateDirectory(folder);
+            }
+
             return folder;
         }
 
@@ -47,6 +50,14 @@ namespace CelerFToverHTTP.Controllers
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            // Check that we are not trying to upload a file greater than 50MB
+            Int32 maxinputlength = 51 * 1024 * 1024;
+
+            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
             }
 
             try
@@ -134,6 +145,14 @@ namespace CelerFToverHTTP.Controllers
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            // Check that we are not trying to upload a file greater than 50MB
+            Int32 maxinputlength = 51 * 1024 * 1024;
+
+            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
             }
 
             try
@@ -224,6 +243,14 @@ namespace CelerFToverHTTP.Controllers
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
+            // Check that we are not trying to upload a file greater than 50MB
+            Int32 maxinputlength = 51 * 1024 * 1024;
+
+            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
+            }
+
             try
             {
 
@@ -310,6 +337,14 @@ namespace CelerFToverHTTP.Controllers
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            // Check that we are not trying to upload a file greater than 50MB
+            Int32 maxinputlength = 51 * 1024 * 1024;
+
+            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
             }
 
             try
@@ -400,6 +435,14 @@ namespace CelerFToverHTTP.Controllers
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
+            // Check that we are not trying to upload a file greater than 50MB
+            Int32 maxinputlength = 51 * 1024 * 1024;
+
+            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
+            }
+
             try
             {
 
@@ -486,6 +529,14 @@ namespace CelerFToverHTTP.Controllers
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            // Check that we are not trying to upload a file greater than 50MB
+            Int32 maxinputlength = 51 * 1024 * 1024;
+
+            if (Convert.ToInt32(HttpContext.Current.Request.InputStream.Length) > maxinputlength)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.RequestEntityTooLarge, "Maximum upload chunk size exceeded");
             }
 
             try
