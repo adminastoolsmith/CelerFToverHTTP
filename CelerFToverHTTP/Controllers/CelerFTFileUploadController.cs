@@ -212,9 +212,18 @@ namespace CelerFToverHTTP.Controllers
                 outputFile.Flush();
                 outputFile.Close();
 
+                // Move the file to the top level directory
+                string oldfilelocation = localFilePath + baseFilename + extension;
+                string newfilelocation = getFileFolder(directoryname + "\\") + baseFilename + extension;
+                System.IO.File.Move(oldfilelocation, newfilelocation);
+
+                // Delete the temporary directory
+                System.IO.Directory.Delete(localFilePath);
+
                 // Get the MD5 hash for the file and send it back to the client
                 HashAlgorithm MD5 = new MD5CryptoServiceProvider();
-                string checksumMd5 = GetHashFromFile(localFilePath + baseFilename + extension, MD5);
+                //string checksumMd5 = GetHashFromFile(localFilePath + baseFilename + extension, MD5);
+                string checksumMd5 = GetHashFromFile(newfilelocation, MD5);
                 
                 
                 return new HttpResponseMessage()
