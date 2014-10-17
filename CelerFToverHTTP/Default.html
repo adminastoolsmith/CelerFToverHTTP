@@ -103,6 +103,8 @@
     </style>
     <script src="Scripts/jquery-2.1.1.min.js"></script>
 </head>
+<!-- In order to position the <div> elements correctly on the page we set the <div> element position relative to the
+     <body> elemnt of the page. This cause the <div> element to maintain their position evene when teh browser window is resized.-->
 <body style="position:relative;width:100%">
     <div id="uploadfileform">
         <form name="ClerFTFileUpload">
@@ -388,14 +390,15 @@
                     uploadworkers.push(uploadworker);
                 }
 
-                // Create the web worker and upload the files
+                // Create the file processing web worker
                 for (var j = 0; j < files.length; j++) {
 
                     var file = files[j];
 
-                    //$("#file_name" + j).children('legend:first').text("Generating file checksum for " + file.name);
+                    // Update the table with the file name
                     $("#file" + j).text(file.name);
 
+                    // Create the file processing web worker
                     var worker = new Worker("Scripts/workerprocessfile.js");
 
                     worker.onmessage = function (e) {
@@ -448,10 +451,14 @@
                     
                     worker.onerror = function (e) { $("#errormessage").append(e.message); }
 
+                    // Check if we are going to do an async upload of a large file
                     var uploadlargfileasync = false;
+
                     if ($('#select_asyncstate').prop('checked')) {
                         uploadlargfileasync = true;
                     }
+
+                     // Start the file upload by sending a postMessage to the file processing web worker
                     worker.postMessage({ 'cmd': 'start', 'files': file, 'directory': $("#select_directory").val(), 'bytesperchunk': $("#select_bytesperchunk option:selected").text(), 'uploadlargfileasync': uploadlargfileasync, 'id': j });
                     workers.push(worker);
                 }
