@@ -215,6 +215,11 @@ namespace CelerFToverHTTP.Controllers
                 // Move the file to the top level directory
                 string oldfilelocation = localFilePath + baseFilename + extension;
                 string newfilelocation = getFileFolder(directoryname + "\\") + baseFilename + extension;
+
+                // Check if the file exists. If it does delete it then move the file
+                if(System.IO.File.Exists(newfilelocation)) {
+                    System.IO.File.Delete(newfilelocation);
+                }
                 System.IO.File.Move(oldfilelocation, newfilelocation);
 
                 // Delete the temporary directory

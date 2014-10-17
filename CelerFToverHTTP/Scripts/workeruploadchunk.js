@@ -158,18 +158,20 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
         if (asyncstate == true) {
             xhr.upload.onprogress = function (e) {
     
-                var progress = parseInt((e.loaded * 100 / e.total), 10);
+                //var progress = parseInt((e.loaded * 100 / e.total), 10);
+                var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
                 self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
-            };
+            }(chunkCount);
         }
     }
     catch (e) {
 
         xhr.onprogress = function (e) {
 
-            var progress = parseInt((e.loaded * 100 / e.total), 10);
+            //var progress = parseInt((e.loaded * 100 / e.total), 10);
+            var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
             self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
-        };
+        }(chunkCount);
 
     }
 

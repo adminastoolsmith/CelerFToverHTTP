@@ -193,8 +193,11 @@ self.onmessage = function (e) {
     //self.postMessage({ 'type': 'status', 'message': "Generating file checksum for " + workerdata.files.name, 'id': workerdata.id });
     //processFileChecksum(workerdata.files);
 
-    // Upload the file
+    // Process the file for uploading      
+    //  Send a status message to the parent page
     self.postMessage({ 'type': 'status', 'message': "Uploading file " + workerdata.files.name, 'id': workerdata.id });
+
+    // Start processing the file
     processFile(workerdata.files);
 
 
