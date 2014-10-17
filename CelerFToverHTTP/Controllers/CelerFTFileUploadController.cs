@@ -74,7 +74,7 @@ namespace CelerFToverHTTP.Controllers
                         return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
                     }
 
-
+                    // Convert the base64 string into a byte array
                     byte[] base64filedata = new byte[base64file.InputStream.Length];
                     await base64file.InputStream.ReadAsync(base64filedata, 0, Convert.ToInt32(HttpContext.Current.Request.InputStream.Length));
 
@@ -103,6 +103,8 @@ namespace CelerFToverHTTP.Controllers
 
                     return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No file chunk uploaded");
                 }
+
+                // Write the byte array to a file
                 var newfilename = filename.Split('.');
                 string baseFilename = Path.GetFileNameWithoutExtension(filename);
                 string extension = Path.GetExtension(filename);
@@ -191,7 +193,9 @@ namespace CelerFToverHTTP.Controllers
             string baseFilename = Path.GetFileNameWithoutExtension(filename);
             string extension = Path.GetExtension(filename);
 
-
+            // If the number of uploaded files is less than the total number of files then             
+            // return an error. This will happen in asynchronous file uploads where the final             
+            // chunk arrives before other chunks 
             if (diSource.GetFiles("*.tmp").Length != numberofChunks)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Number of file chunks less than total count");
@@ -201,6 +205,8 @@ namespace CelerFToverHTTP.Controllers
 
             try
             {
+                // Get all of the file chunks in the directory and use them to create the file.
+                // All of the file chunks are named in sequential order.
                 foreach (FileInfo fiPart in diSource.GetFiles("*.tmp")) {
 
                     byte[] filedata = System.IO.File.ReadAllBytes(fiPart.FullName);

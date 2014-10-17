@@ -8,7 +8,7 @@
 importScripts('/Scripts/spark-md5.js');
 
 // Global variables
-// Note IE 10 does not recognize the const declaration so we have to use var
+// Note IE 10 does not recognize the const declaration so we have to use var instead
 var LARGE_FILE = 500 * 1024 * 1024;
 var workerdata = '';
 var asyncstate = true;
