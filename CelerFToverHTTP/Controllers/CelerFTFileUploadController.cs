@@ -1,4 +1,19 @@
-﻿using System;
+﻿/**
+ * Description - This code provides the functionality to do Gigabit file uploads using ASP.NET Web API.
+ *               The client application uploads a Gigabit sized file to the ASP.NET Web API backend in chunks, and each
+ *               chunk is saved by the ASP.NET Web API backend as a separate file. The chunks are sent as 
+ *               multipart/form-data encoded data. The data can either by a binary file or a base64 enocded 
+ *               version of the binary file. Once all of the data hase been received the client sends the
+ *               ASP.NET Web API backend a mergeall command and the ASP.NET Web API backend will merge all 
+ *               of the file chunks into a single file.
+ *               
+ * Author - Nigel Thomas
+ * 
+ * Copyright 2014 by Nigel Thomas<nigelbtomas@gmail.com>
+ * 
+ *  */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
