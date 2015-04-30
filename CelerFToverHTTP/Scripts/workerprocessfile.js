@@ -12,7 +12,7 @@
 
 // Import additional scripts
 // MD5 checksum libraray https://github.com/satazor/SparkMD5
-importScripts('/Scripts/spark-md5.js');
+importScripts('/CelerFToverHTTP/Scripts/spark-md5.js');
 
 // Global variables
 // Note IE 10 does not recognize the const declaration so we have to use var instead

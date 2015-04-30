@@ -25,8 +25,8 @@
  *  */
 
 // Url for WebAPI functions
-var webapiUrl = "/api/CelerFTFileUpload/UploadChunk";
-var webapiGetMergeAllUrl = "/api/CelerFTFileUpload/MergeAll";
+var webapiUrl = "/CelerFToverHTTP/api/CelerFTFileUpload/UploadChunk";
+var webapiGetMergeAllUrl = "/CelerFToverHTTP/api/CelerFTFileUpload/MergeAll";
 
 // Global variables
 // Note IE 10 does not recognize the const declaration so we have to use var instead
@@ -204,7 +204,7 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
         if (this.readyState == 4 && this.status == 200) {
 
             // Send back progess information for synchronous uploads 
-            // The upload.onprogress method only fires on asynchornous uploads
+            // The upload.onprogress method only fires on asynchronous uploads
             // and we are doing synchronous uploads
             if (asyncstate == false) {
                 var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
@@ -247,6 +247,11 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
             mergeall(filename, chunkCount);
 
         }
+    };
+
+    xhr.onerror = function () {
+
+        self.postMessage({ 'type': 'error', 'message': "Upload Error: " + this.responseText, 'id': workerdata.id });
     };
 
     // Open the url and upload the file chunk
