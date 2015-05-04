@@ -175,7 +175,7 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
     var xhr = xhrworkerspool.getWorker();
 
     // xhr.upload causes an error in IE. Use the try catch block to
-    // catch the failure in IE, and then upload the progress block in
+    // catch the failure in IE, and then update the progress block in
     // the catch routine.
     try {
         if (asyncstate == true) {
