@@ -63,8 +63,8 @@ function processFileChecksum(blob) {
 
         currentChunk++;
 
-        var progress = parseInt((currentChunk * 100 / chunks), 10);
-        self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+        //var progress = parseInt((currentChunk * 100 / chunks), 10);
+        //self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
 
         start = end;
         end = start + BYTES_PER_CHUNK;

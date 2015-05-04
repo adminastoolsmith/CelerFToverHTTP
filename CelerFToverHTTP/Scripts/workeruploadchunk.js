@@ -180,10 +180,20 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
     try {
         if (asyncstate == true) {
             xhr.upload.onprogress = function (e) {
+
+                if (e.lengthComputable) {
+                    var progress = parseInt((e.loaded * 100 / e.total), 10);
+                    self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+                }
+                else {
+                    var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
+                    self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+                }
     
-                //var progress = parseInt((e.loaded * 100 / e.total), 10);
+                /*//var progress = parseInt((e.loaded * 100 / e.total), 10);
                 var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
-                self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+                self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });*/
+
             }(chunkCount);
         }
     }
@@ -191,9 +201,19 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
 
         xhr.onprogress = function (e) {
 
-            //var progress = parseInt((e.loaded * 100 / e.total), 10);
+            if (e.lengthComputable) {
+                var progress = parseInt((e.loaded * 100 / e.total), 10);
+                self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+            }
+            else {
+                var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
+                self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+            }
+
+            /*//var progress = parseInt((e.loaded * 100 / e.total), 10);
             var progress = parseInt((chunkCount.currentNumber * 100 / chunkCount.numberOfChunks), 10);
-            self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });
+            self.postMessage({ 'type': 'progress', 'percentage': progress, 'id': workerdata.id });*/
+
         }(chunkCount);
 
     }
@@ -251,7 +271,7 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
 
     xhr.onerror = function () {
 
-        self.postMessage({ 'type': 'error', 'message': "Upload Error: " + this.responseText, 'id': workerdata.id });
+        self.postMessage({ 'type': 'error', 'message': "Upload Error: " + this.statusText, 'id': workerdata.id });
     };
 
     // Open the url and upload the file chunk
