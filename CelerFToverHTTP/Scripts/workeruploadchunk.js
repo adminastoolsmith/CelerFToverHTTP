@@ -1,7 +1,7 @@
 ﻿/**
  * Description - This code provides the functionality to do Gigabit file uploads to a backend server that supports
  *               this capability. We use the XMLHttpRequest Level 2 object to upload either a binary file chunk or
- *               a base64 encoded represenation of teh file chunk to the server. The file chunk is uploaded as
+ *               a base64 encoded represenation of the file chunk to the server. The file chunk is uploaded as
  *               multipart/form-data and is sent use the HTTP POST verb. The parameters sent in the upload method are:
  *               
  *               filename - This is the name of the file to be uploaded
@@ -10,7 +10,7 @@
  *               numberOfChunks - The total number of file chunks that is to be uploaded
  *               asynstate - Access the url either synchrnoulsy or asynchrnously
  *               
- *               The merge method is used to merge all of the saved file chunks into the file and  uses the HHTP 
+ *               The merge method is used to merge all of the saved file chunks into the file and  uses the HTTP 
  *               GET verb the parameters are:
  *               
  *               filename - This is the name of the file to be uploaded
@@ -174,6 +174,7 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
     // Grab a worker from the pool
     var xhr = xhrworkerspool.getWorker();
 
+
     // xhr.upload causes an error in IE. Use the try catch block to
     // catch the failure in IE, and then update the progress block in
     // the catch routine.
@@ -260,14 +261,14 @@ function upload(chunk, filename, chunkCount, uploadurl, asyncstate) {
 
     };
 
-    xhr.onloadend = function () {
+    /*xhr.onloadend = function () {
 
         // If we have uploaded all of the file chunks then tell the server to merge them
         if (chunkCount.numberOfUploadedChunks == chunkCount.numberOfChunks) {
             mergeall(filename, chunkCount);
 
         }
-    };
+    };*/
 
     xhr.onerror = function () {
 
@@ -341,9 +342,9 @@ self.onmessage = function (e) {
         urlcount++;
     }
 
-    else {
-        mergeall(workerdata.filename, workerdata.chunkCount);
-    }
+    //else {
+    //    mergeall(workerdata.filename, workerdata.chunkCount);
+    //}
 
 
 
