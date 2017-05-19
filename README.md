@@ -1,6 +1,11 @@
 # CelerFToverHTTP
 ===============
 
+##### Note
+
+An updated version of CelerFT can be found at this link https://github.com/adminastoolsmith/CelerFT. This version supports 
+resuming a file upload and is written as a module.
+
 #### Description
 
 CelerFT is a file upload tool that allows you to upload up to 5 files at a time. CelerFT allows you to upload 
@@ -13,8 +18,3 @@ The CelerFT backend web server is based on ASP.NET Web API.
 ##### Dependencies
 
 CelerFT requires JQuery and the SparkMD5 library.
-
-##### Note
-
-An updated version of CelerFT can be found at this link https://github.com/adminastoolsmith/CelerFT. This version supports 
-resuming a file upload and is written as a module.
